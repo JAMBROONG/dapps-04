@@ -12,7 +12,7 @@ body {
   background-image: url("../public/bodybg1.jpg") !important;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: top;
+  background-position: bottom;
   font-family: "gumbo";
   letter-spacing: 1px;
 }
