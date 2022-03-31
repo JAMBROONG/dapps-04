@@ -1,16 +1,615 @@
-html,
-body {
+* {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@font-face {
+  font-family: "gumbo";
+  src: url("../public/Mystery-Day\ 400.ttf");
 }
 
-* {
-  box-sizing: border-box;
+body {
+  background-image: url("../public/bodybg1.jpg") !important;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+  font-family: "gumbo";
+  letter-spacing: 1px;
+}
+
+.btn-wooden-disabled {
+  background-image: url("../public/button_disable.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  transition: all 0.5s ease-in-out;
+  color: rgb(223, 223, 223);
+  width: 185px;
+  height: 52px;
+  border-radius: 40px;
+  border: none;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.btn-wooden {
+  background-image: url("../public/button.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  transition: all 0.5s ease-in-out;
+  color: rgb(215, 215, 215);
+  width: 185px;
+  height: 52px;
+  border-radius: 40px;
+  border: none;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.img-option {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+  -webkit-filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.img-asix {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  -webkit-filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.img-header {
+  width: 120px;
+  height: 120px;
+  margin-right: 10px;
+  -webkit-filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+.btn-wooden:hover {
+  color: white;
+}
+
+.btn-wooden-disabled:disabled {
+  color: rgb(206, 206, 206);
+}
+
+.btn-max {
+  background-image: url("../public/circle_button.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border-radius: 100%;
+  color: rgb(232, 232, 232);
+  width: 40px;
+  height: 40px;
+  border: none;
+  margin-right: 5%;
+  font-family: "gumbo";
+  font-size: 16px;
+  margin-bottom: 3%;
+}
+
+.btn-max:hover {
+  color: white;
+}
+
+.form {
+  border-radius: 25px;
+  border: 1px solid #94411A !important;
+  height: 45px;
+  background: #dcbf9d7e !important;
+  color: #9c785b !important;
+  font-size: 20px !important;
+}
+
+.input-group .form-control {
+  border-radius: 25px;
+  border: none !important;
+  border-left: none !important;
+  height: 45px;
+  background: none !important;
+  color: #b35b33 !important;
+  font-size: 20px !important;
+}
+
+.input-group-text {
+  border-radius: 25px;
+  border: none !important;
+  border-right: none !important;
+  height: 45px;
+  background: none !important;
+  color: #9c785b !important;
+  padding-right: 0;
+}
+
+label {
+  color: #b35b33;
+}
+
+.card {
+  height: 372px;
+  background-image: url("../public/woodCard.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.card-header {
+  text-align: center;
+  padding-left: 25px;
+  padding-bottom: 10px;
+  padding-top: 25px;
+  font-family: "gumbo";
+  border: none;
+}
+
+.card-body {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.info {
+  color: #b35b33 !important;
+}
+
+.disabled {
+  cursor: not-allowed !important;
+}
+
+@media (max-width: 1199px) {
+
+  .card-body {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 60px;
+    font-size: 18px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: -50px;
+    margin-bottom: 10px;
+    height: 460px;
+  }
+  .btn-card {
+    width: 155px;
+    height: 42px;
+    margin: 1px;
+  }
+}
+
+@media (max-width: 1024px) {
+
+  .card-body {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 80px;
+    font-size: 18px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: -50px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+  .btn-card {
+    width: 155px;
+    height: 42px;
+    margin: 1px;
+  }
+}
+
+@media (max-width: 991px) {
+
+  .card-body {
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 25px;
+    font-size: 25px;
+  }
+  .card {
+    background-image: url("../public/woodCard.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+  .btn-card {
+    width: 175px;
+    height: 50px;
+    margin: 1px;
+  }
+}
+@media (max-width: 767px) {
+
+  .card-body {
+    padding-left: 70px;
+    padding-right: 70px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 65px;
+    font-size: 20px;
+  }
+  .card {
+    background-image: url("../public/woodCard.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 575px) {
+
+  .card-body {
+    padding-left: 80px;
+    padding-right: 80px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 25px;
+    font-size: 20px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 550px) {
+
+  .card-body {
+    padding-left: 70px;
+    padding-right: 70px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 25px;
+    font-size: 20px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 520px) {
+
+  .img-asix {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    margin-left: -8px;
+    margin-bottom: 3px;
+  }
+
+  .card-body {
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 45px;
+    font-size: 20px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+  .btn-card {
+    width: 155px;
+    height: 42px;
+    margin: 1px;
+  }
+}
+
+
+@media (max-width: 470px) {
+
+  .img-asix {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    margin-left: -8px;
+    margin-bottom: 3px;
+  }
+  
+  .img-header {
+    width: 70px;
+    height: 70px;
+    margin-right: 5px;
+  }
+  .card-body {
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 40px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 60px;
+    font-size: 20px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 500px;
+  }
+  .btn-card {
+    width: 155px;
+    height: 42px;
+    margin: 1px;
+  }
+}
+
+@media (max-width: 425px) {
+  
+  .img-header {
+    width: 70px;
+    height: 70px;
+    margin-right: 5px;
+  }
+  .card-body {
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 45px;
+    font-size: 16px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 430px;
+  }
+  .btn-card {
+    width: 125px;
+    height: 35px;
+    margin: 1px;
+  }
+}
+
+@media (max-width: 400px) {
+  
+  .img-header {
+    width: 70px;
+    height: 70px;
+    margin-right: 5px;
+  }
+  .card-body {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 50px;
+    font-size: 16px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    height: 430px;
+
+  }
+  .btn-switch {
+    margin-top: -10px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+  .btn-wooden-disabled {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;
+  }
+  .btn-wooden {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;
+  }
+  .btn-card {
+    width: 125px;
+    height: 35px;
+    margin: 1px;
+  }
+}
+
+@media (max-width: 380px) {
+  .form {
+    height: 35px;
+  }
+  .input-group .form-control {
+    height: 35px;
+  }
+  
+  .input-group-text {
+    height: 35px;
+  }
+  
+  .img-asix {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    margin-left: -8px;
+    margin-bottom: 3px;
+  }
+  
+  .img-header {
+    width: 70px;
+    height: 70px;
+    margin-right: 5px;
+  }
+  .card-body {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-bottom: 5px;
+    padding-top: 65px;
+    font-size: 16px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: 5px;
+    margin-bottom: -5px;
+    height: 430px;
+
+  }
+  .btn-switch {
+    margin-top: -10px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+  .btn-wooden-disabled {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;
+  }
+  .btn-wooden {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;
+  }
+  .btn-card {
+    width: 115px;
+    height: 32px;
+    margin: 1px;
+  }
+}
+
+@media (max-width: 345px) {
+  .form {
+    height: 35px;
+  }
+  .input-group .form-control {
+    height: 35px;
+  }
+  
+  .input-group-text {
+    height: 35px;
+  }
+  
+  .img-asix {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    margin-left: -8px;
+    margin-bottom: 3px;
+  }
+  
+  .img-header {
+    width: 70px;
+    height: 70px;
+    margin-right: 5px;
+  }
+  .card-body {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 25px;
+  }
+  .card-header {
+    padding-left: 25px;
+    padding-top: 75px;
+    font-size: 14px;
+  }
+  .card {
+    background-image: url("../public/woodCard2.png");
+    background-size: contain;
+    background-position: center;
+    margin-top: -20px;
+    margin-bottom: -20px;
+    height: 422px;
+  }
+  .btn-switch {
+    margin-top: -10px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+  .btn-wooden-disabled {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;
+  }
+  .btn-wooden {
+    width: 150px;
+    height: 45px;
+    font-size: 16px;
+  }
+  .btn-card {
+    width: 115px;
+    height: 32px;
+    margin: 1px;
+  }
 }
