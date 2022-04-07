@@ -39,7 +39,7 @@ export default function Home() {
             walletAddress.length - 0
           )
         );
-        
+
         if (form) {
           const cekAproveV1 = await cekAprove(process.env.TOKEN_V1, walletAddress);
           setApproved(cekAproveV1);
@@ -254,7 +254,7 @@ export default function Home() {
       await Moralis.enableWeb3();
 
       let UpV1 = new web3.eth.Contract(TRANSFORM_ABI, process.env.TRANSFORM);
-      const amountSwap = new BigNumber(parseInt(amountValue.current.value.replace(/,/g, ""))).toFixed()
+      const amountSwap = new BigNumber(parseInt(amountValue.current.value.replace(/,/g, "")) * 10 ** 9).toFixed()
 
       UpV1.methods.Upgrade_V1(amountSwap).send(
         {
@@ -279,13 +279,23 @@ export default function Home() {
                     position: toast.POSITION.TOP_CENTER,
                   })
                   setApproved(true);
-                  setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
+                  setBalanace(
+                (balance * 10 ** 9 -
+                  parseInt(amountValue.current.value.replace(/,/g, "")) *
+                    10 ** 9) /
+                  10 ** 9
+              );
                   setMaxAmount("0")
                 }
               )()
             } else {
               setApproved(true);
-              setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
+              setBalanace(
+                (balance * 10 ** 9 -
+                  parseInt(amountValue.current.value.replace(/,/g, "")) *
+                    10 ** 9) /
+                  10 ** 9
+              );
               setMaxAmount("0");
             }
           }
@@ -305,7 +315,7 @@ export default function Home() {
       await Moralis.enableWeb3();
 
       let UpV2 = new web3.eth.Contract(TRANSFORM_ABI, process.env.TRANSFORM);
-      const amountSwap = new BigNumber(parseInt(amountValue.current.value.replace(/,/g, ""))).toFixed()
+      const amountSwap = new BigNumber(parseInt(amountValue.current.value.replace(/,/g, "")) * 10 ** 9).toFixed()
 
       UpV2.methods.Upgrade_V2(amountSwap).send(
         {
@@ -330,13 +340,23 @@ export default function Home() {
                     position: toast.POSITION.TOP_CENTER,
                   })
                   setApproved(true);
-                  setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
+                  setBalanace(
+                (balance * 10 ** 9 -
+                  parseInt(amountValue.current.value.replace(/,/g, "")) *
+                    10 ** 9) /
+                  10 ** 9
+              );
                   setMaxAmount("0")
                 }
               )()
             } else {
               setApproved(true);
-              setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
+              setBalanace(
+                (balance * 10 ** 9 -
+                  parseInt(amountValue.current.value.replace(/,/g, "")) *
+                    10 ** 9) /
+                  10 ** 9
+              );
               setMaxAmount("0")
             }
           }
@@ -429,7 +449,7 @@ export default function Home() {
                           </small>
                         </div>
                       ) : isAuthenticated
-                        ? 'Balance : '+formatUang(parseInt(balance).toString())
+                        ? 'Balance : ' + formatUang(parseInt(balance).toString())
                         : "Balance : 0"
                     }
                   </p>
