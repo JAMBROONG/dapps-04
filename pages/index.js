@@ -12,20 +12,25 @@ const V2ABI = require("../abi/V2ABI");
 export default function Home() {
   const { isAuthenticated, authenticate, user, logout } = useMoralis();
   const [wallet, setWallet] = useState("");
+  const [walletFull, setWalletFull] = useState('');
   const [login, setLogin] = useState(false);
   const [balance, setBalanace] = useState("0");
   const [maxAmount, setMaxAmount] = useState("0");
   const [approved, setApproved] = useState(false);
-  Moralis.serverURL = process.env.NEXT_PUBLIC_SERVER_URL;
+  const [form, setForm] = useState(true);
+  const [loading, setLoading] = useState(false);
   const amountValue = useRef(null);
+  Moralis.serverURL = process.env.NEXT_PUBLIC_SERVER_URL;
 
   useEffect(async () => {
     if (isAuthenticated) {
       if (!login) {
         logout();
       } else {
+        setLoading(true);
         const web3 = new Web3(window.ethereum);
         const walletAddress = await user.get("ethAddress");
+        setWalletFull(walletAddress);
         setWallet(
           walletAddress.slice(0, 5) +
           "..." +
@@ -34,17 +39,19 @@ export default function Home() {
             walletAddress.length - 0
           )
         );
-        // const options = { chain: 'bsc', address: walletAddress, token_addresses: "0xc98a8EC7A07f1b743E86896a52434C4C6A0Dbc42" }
-
-        const getbalance = await getBalance();
-        setBalanace(getbalance);
-
-        let tokcontract = new web3.eth.Contract(V2ABI, process.env.TOKEN_V1);
-        const isAprove = await tokcontract.methods
-          .allowance(walletAddress, process.env.TRANSFORM)
-          .call();
-        if (isAprove > 0) {
-          setApproved(true);
+        
+        if (form) {
+          const cekAproveV1 = await cekAprove(process.env.TOKEN_V1, walletAddress);
+          setApproved(cekAproveV1);
+          const getbalance = await getBalanceV1(walletAddress);
+          setBalanace(getbalance);
+          setLoading(false);
+        } else {
+          const cekAproveV2 = await cekAprove(process.env.TOKEN_V2, walletAddress);
+          setApproved(cekAproveV2);
+          const getbalance = await getBalanceV2(walletAddress);
+          setBalanace(getbalance);
+          setLoading(false);
         }
 
       }
@@ -57,10 +64,21 @@ export default function Home() {
       setApproved(false);
       setLogin(false);
     });
-  }, [isAuthenticated, balance]);
+  }, [isAuthenticated, form]);
 
-  const getBalance = async () => {
-    const walletAddress = await user.get("ethAddress");
+  //editan disini
+
+  const cekAprove = async (token, walletAddress) => {
+    const web3 = new Web3(window.ethereum);
+    const tokcontract = new web3.eth.Contract(V2ABI, token);
+    const isAprove = await tokcontract.methods
+      .allowance(walletAddress, process.env.TRANSFORM)
+      .call();
+    if (isAprove > 0) return true;
+    return false;
+  }
+
+  const getBalanceV1 = async (walletAddress) => {
     const options = {
       chain: "bsc",
       address: walletAddress,
@@ -73,19 +91,34 @@ export default function Home() {
     return "0";
   }
 
+  const getBalanceV2 = async (walletAddress) => {
+    const options = {
+      chain: "bsc",
+      address: walletAddress,
+      token_addresses: process.env.TOKEN_V2,
+    };
+    const balances = await Moralis.Web3API.account.getTokenBalances(
+      options
+    );
+    if (balances.length > 0) return (balances[0].balance / 10 ** 9);
+    return "0";
+  }
+
+
   const loginEvt = async () => {
     const web3 = await Moralis.enableWeb3();
     const chainIdHex = await Moralis.switchNetwork("0x38");
 
     setLogin(true);
     await authenticate({
-      signingMessage: "Signing in ASIX Token Swap",
+      signingMessage: "Signing in ASIX Upgrade",
     });
   }
 
   const logoutEvt = async () => {
     await logout();
     setWallet("");
+    setWalletFull("")
     setBalanace("0");
     setApproved(false);
     console.log("logged out");
@@ -127,7 +160,9 @@ export default function Home() {
     return setMaxAmount(formatUang(parseInt(balance).toString()));
   }
 
-  const approve = async () => {
+  //tambah approval atau enable + Upgrade disini
+
+  const approveV1 = async () => {
     const web3 = new Web3(window.ethereum);
     try {
       let user = Moralis.User.current();
@@ -135,9 +170,7 @@ export default function Home() {
       await Moralis.enableWeb3();
 
       let tokcontract = new web3.eth.Contract(V2ABI, process.env.TOKEN_V1);
-      const amountApprove = (100000000 * 10 ** 28).toLocaleString("fullwide", {
-        useGrouping: false,
-      });
+      const amountApprove = new BigNumber(10000000000000000000000000 * 10 ** 23).toFixed()
       tokcontract.methods.approve(process.env.TRANSFORM, amountApprove).send(
         {
           from: walletAddress,
@@ -171,24 +204,65 @@ export default function Home() {
     }
   }
 
-  const Transform = async () => {
+  const approveV2 = async () => {
+    const web3 = new Web3(window.ethereum);
+    try {
+      let user = Moralis.User.current();
+      const walletAddress = await user.get("ethAddress");
+      await Moralis.enableWeb3();
+
+      let tokcontract = new web3.eth.Contract(V2ABI, process.env.TOKEN_V2);
+      const amountApprove = new BigNumber(10000000000000000000000000 * 10 ** 23).toFixed()
+      tokcontract.methods.approve(process.env.TRANSFORM, amountApprove).send(
+        {
+          from: walletAddress,
+          value: 0,
+        },
+        (err, ressw) => {
+          toast.info("Approving Transform_Contract to spend. Please wait", {
+            autoClose: 10000,
+            position: toast.POSITION.TOP_CENTER,
+          });
+          if (err) {
+            toast.error("Transaction failed!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          } else {
+            if (ressw) {
+              setTimeout(() => {
+                toast.success("Success Enable Transform_Contract", {
+                  position: toast.POSITION.TOP_CENTER,
+                });
+                setApproved(true);
+              }, 3000);
+            } else {
+              setApproved(true);
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const UpgradeV1 = async () => {
     const web3 = new Web3(window.ethereum);
     try {
       let user = Moralis.User.current();
       const walletAddress = user.get("ethAddress");
       await Moralis.enableWeb3();
 
-      let SwapV2 = new web3.eth.Contract(TRANSFORM_ABI, process.env.TRANSFORM);
-      const amountSwap =
-        new BigNumber(parseInt(amountValue.current.value.replace(/,/g, "")));
+      let UpV1 = new web3.eth.Contract(TRANSFORM_ABI, process.env.TRANSFORM);
+      const amountSwap = new BigNumber(parseInt(amountValue.current.value.replace(/,/g, ""))).toFixed()
 
-      SwapV2.methods.Transform(amountSwap).send(
+      UpV1.methods.Upgrade_V1(amountSwap).send(
         {
           from: walletAddress,
           value: 0,
         },
         (err, ressw) => {
-          toast.info("Swapping your ASIX_V1. Please wait", {
+          toast.info("Upgrading your ASIX_V1. Please wait", {
             autoClose: 10000,
             position: toast.POSITION.TOP_CENTER,
           });
@@ -200,7 +274,7 @@ export default function Home() {
             if (ressw) {
               (
                 async () => {
-                  toast.success("Success swapping to Transform Contract!", {
+                  toast.success("Success upgrading to Upgrade Contract!", {
                     autoClose: 3000,
                     position: toast.POSITION.TOP_CENTER,
                   })
@@ -210,13 +284,60 @@ export default function Home() {
                 }
               )()
             } else {
+              setApproved(true);
+              setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
+              setMaxAmount("0");
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+
+  const UpgradeV2 = async () => {
+    const web3 = new Web3(window.ethereum);
+    try {
+      let user = Moralis.User.current();
+      const walletAddress = user.get("ethAddress");
+      await Moralis.enableWeb3();
+
+      let UpV2 = new web3.eth.Contract(TRANSFORM_ABI, process.env.TRANSFORM);
+      const amountSwap = new BigNumber(parseInt(amountValue.current.value.replace(/,/g, ""))).toFixed()
+
+      UpV2.methods.Upgrade_V2(amountSwap).send(
+        {
+          from: walletAddress,
+          value: 0,
+        },
+        (err, ressw) => {
+          toast.info("Upgrading your ASIX_V2. Please wait", {
+            autoClose: 10000,
+            position: toast.POSITION.TOP_CENTER,
+          });
+          if (err) {
+            toast.error("Transaction failed!", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          } else {
+            if (ressw) {
               (
                 async () => {
+                  toast.success("Success upgrading to Upgrade Contract!", {
+                    autoClose: 3000,
+                    position: toast.POSITION.TOP_CENTER,
+                  })
                   setApproved(true);
                   setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
                   setMaxAmount("0")
                 }
               )()
+            } else {
+              setApproved(true);
+              setBalanace(balance - parseInt(amountValue.current.value.replace(/,/g, "")));
+              setMaxAmount("0")
             }
           }
         }
@@ -229,8 +350,8 @@ export default function Home() {
   return (
     <div className="container">
       <Head>
-        <title>Transform ASIX Token</title>
-        <meta name="description" content="Generated by create next app" />
+        <title>Upgrade ASIX Token</title>
+        <meta name="description" content="Official dapps to upgrade your ASIX Token" />
         <link rel="icon" href="/asix.png" />
       </Head>
 
@@ -273,8 +394,14 @@ export default function Home() {
         <div className="row mt-3 align-items-center justify-content-md-center">
           <div className="col-lg-5">
             <div className="card">
-              <h5 className="card-header">TRANSFORM YOUR ASIX</h5>
+              <h5 className="card-header">UPGRADE YOUR ASIX</h5>
               <div className="card-body">
+                <div className="text-center">
+                  <button className={form ? "btn-switch1" : "btn-switch2"} onClick={() => {
+                    setForm(prev => !prev);
+                    setMaxAmount('0');
+                  }}></button>
+                </div>
                 <div className="row">
                   <div className="col mb-3">
                     {isAuthenticated ? (
@@ -291,20 +418,27 @@ export default function Home() {
 
                 <div className="form-group">
                   <label htmlFor="send">
-                    Amount
+                    Amount {form ? ' V1' : ' V2'}
                   </label>
                   <p className="info float-right">
-                    Balance :
-                    {isAuthenticated
-                      ? " " + formatUang(parseInt(balance).toString())
-                      : " 0"}
+                    {
+                      loading ? (
+                        <div className="d-flex">
+                          <small className="placeholder-glow mb-1">
+                            <span className="placeholder col-12 placeholder-lg"></span>
+                          </small>
+                        </div>
+                      ) : isAuthenticated
+                        ? 'Balance : '+formatUang(parseInt(balance).toString())
+                        : "Balance : 0"
+                    }
                   </p>
                   <div className="input-group form">
                     <div className="input-group-prepend">
                       <span className="input-group-text">
                         <img alt=""
                           className="img-asix"
-                          src="/asix01.png"
+                          src={form ? "/asix01.png" : "/asix02.png"}
                         />
                       </span>
                     </div>
@@ -343,7 +477,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="row justify-content-md-center mt-5 text-center">
+                <div className="row justify-content-md-center mt-1 text-center">
                   {isAuthenticated && (
                     <div className="col-lg-12 mb-1 d-flex">
                       {approved ? (
@@ -353,22 +487,26 @@ export default function Home() {
                           </button>
                           <button
                             className="btn-wooden btn-card mx-auto"
-                            onClick={() => Transform()}
+                            onClick={() => {
+                              form ? UpgradeV1() : UpgradeV2()
+                            }}
                           >
-                            Transform
+                            Upgrade {form ? ' V1' : ' V2'}
                           </button>
                         </>
                       ) : (
                         <>
                           <button
                             className="btn-wooden btn-card mx-auto"
-                            onClick={() => approve()}
+                            onClick={() => {
+                              form ? approveV1() : approveV2
+                            }}
                           >
-                            Enable
+                            Enable {form ? ' V1' : ' V2'}
                           </button>
 
                           <button disabled className="btn-wooden-disabled disabled btn-card mx-auto">
-                            Transform
+                            Upgrade {form ? ' V1' : ' V2'}
                           </button>
                         </>
                       )}
