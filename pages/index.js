@@ -499,7 +499,7 @@ export default function Home() {
                           <button
                             className="btn-wooden btn-card mx-auto"
                             onClick={() => {
-                              form ? approveV1() : approveV2
+                              form ? approveV1() : approveV2()
                             }}
                           >
                             Enable {form ? ' V1' : ' V2'}
